@@ -1,0 +1,75 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+Inventory Drug List
+{% endblock %}
+{% block content %}
+<div class="container">
+
+  <div class="row">
+
+
+    
+
+  </div>
+
+  <div class="row">
+    <div class="heading-line-bottom padding-auto">
+      <h2 class=" font-28">Drug List in {{store_name}}</h2>
+    </div>
+    <div class="col-md-12">
+      {% if drug_recs_error %}
+      <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button"> × </button>
+        Error ! Try again please.
+      </div>
+    </div>
+    {% endif %}
+    <div data-example-id="simple-table" class="bs-example">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Common Name</th>
+            <th>Brand Name</th>
+            <th>Chemical Name</th>
+            <th>Quantity</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {% for drug_rec in drug_recs %}
+          <tr>
+            <td><a href="{% url 'inventory:inventory_detail' drug_rec.drug_id %}">{{drug_rec.item_name}}</a></td>
+            <td>{{drug_rec.brand_name}}</td>
+            <td>{{drug_rec.chemical_name}}</td>
+            <td><span class="badge">{{drug_rec.quantity}}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if drug_recs.has_other_pages %}
+      <ul class="pagination">
+        {% if drug_recs.has_previous %}
+          <li><a href="?page={{ drug_recs.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&laquo;</span></li>
+        {% endif %}
+        {% for i in drug_recs.paginator.page_range %}
+          {% if drug_recs.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+          {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+          {% endif %}
+        {% endfor %}
+        {% if drug_recs.has_next %}
+          <li><a href="?page={{ drug_recs.next_page_number }}">&raquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+      </ul>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

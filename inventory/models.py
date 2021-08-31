@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.urls.base import reverse
+from django.utils import timezone
 # Create your models here.
 from django.db import models
 from django.utils import timezone
@@ -10,33 +11,43 @@ class ProductType(models.Model):
     name = models.CharField(max_length = 100)
     #type_id = models.IntegerField()
     description = models.TextField()
-
     def __str__(self):
-        self.name
+        return self.name
 
 class Products(models.Model):
     item_name = models.CharField(max_length = 100)
     item_type = models.ForeignKey(ProductType , on_delete = models.CASCADE)
     brand_name = models.CharField(max_length = 100)
     chemical_name = models.CharField(max_length = 100)
-    date_time_entered = models.DateTimeField()
+    date_time_entered = models.DateTimeField(default = timezone.now() )
 
     def __str__(self):
-        self.item_name
+        return self.item_name
+    
 class Stores(models.Model):
     storename = models.CharField(max_length =100)
-    #store_id = models.IntegerField()
-
     def __str__(self):
-        self.storename
+        return self.storename
+    
+##To be used in case of an internal order
+##Drugs stored as in invoice
+##Then multiplied later
+# class MainStores(models.Model):
+#     storename = models.CharField(max_length=100)
 
 class Inventory(models.Model):
     product = models.ForeignKey(Products, on_delete = models.CASCADE)
     store = models.ForeignKey(Stores, models.CASCADE)
     quantity = models.IntegerField()
-
     def __str__(self):
-        self.product
+        return self.product.item_name
+    # def get_absolute_url(self):
+    #     # return reverse("inventory:inventory_drug_list", kwargs = {"store_id":self.store.id})
+    #     return reverse("inventory:inventory_detail", kwargs = {"pk":self.product.id})
+    
+    
+    class Meta:
+        unique_together = ('product', 'store')
 
 class Suppliers(models.Model):
     #supp_id = models.IntegerField()
@@ -45,7 +56,7 @@ class Suppliers(models.Model):
     phone = models.IntegerField()
 
     def __str__(self):
-        self.name
+        return self.name
     
 class ExternalOrder(models.Model):
     #order_id = models.IntegerField()
@@ -58,9 +69,9 @@ class ExternalOrder(models.Model):
     approval = models.BooleanField(default = False)
     approver = models.ForeignKey(User, on_delete = models.CASCADE , related_name = "external_order_approver")
     products = models.JSONField(null = True)### more research on how to use foreignkeys
-
+###Look for template to capture data with the right grouping of drugs
     def __str__(self):
-        self.date_time_entry
+        return self.date_time_entry
 
 class InventoryCard(models.Model):
     product_moving = models.ForeignKey(Products , on_delete = models.CASCADE)
@@ -72,6 +83,6 @@ class InventoryCard(models.Model):
     case_involved_description =models.CharField(max_length = 100) ## Can be used to find the actual db(sold/external_order/internal_order)
     
     def __str__(self):
-        self.product_moving
+        return self.product_moving
 
 

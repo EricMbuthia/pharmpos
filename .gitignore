@@ -5,7 +5,7 @@
 /pharmpos/static/
 /pharmpos/tmp/
 /pharmpos/media/
-access_token.txt
+access_token
 /pharmpos/inventory/migrations/
 .vscode
 
