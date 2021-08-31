@@ -5,6 +5,9 @@
 /pharmpos/static/
 /pharmpos/tmp/
 /pharmpos/media/
+access_token.txt
+/pharmpos/inventory/migrations/
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -38,7 +41,7 @@ coverage.xml
 
 # Django stuff:
 *.log
-db.sqlite
+db.sqlite3
 
 
 # Sphinx documentation
