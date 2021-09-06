@@ -1,0 +1,58 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+Supplier Registration
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+
+    
+    <div class="col-md-6 col-md-push-3">
+      <div id = "my_alert_box"></div>
+      {% if supplierRegForm.errors %}
+      <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button"> × </button>
+        Error ! Check Your data please. </div>
+    </div>
+						{% endif %}
+      <form name="reg-form" id = "new_supplier_form" class="register-form" method="post">
+     <h3 class="font-28">Register Supplier </h2>
+      {% csrf_token %}
+
+        <hr>
+        <div class="row">
+          <div class="form-group col-md-8">
+            <!-- <label>Category</label>
+            <input name="drug_category_name" class="form-control" type="text"> -->
+            <label> {{supplierRegForm.supplier_name.label}}</label>
+              {{supplierRegForm.supplier_name}}
+          </div>
+          <div class="form-group col-md-8">
+            <!-- <label>Category</label>
+            <input name="drug_category_name" class="form-control" type="text"> -->
+            <label> {{supplierRegForm.supplier_email.label}}</label>
+              {{supplierRegForm.supplier_email}}
+          </div>
+          <div class="form-group col-md-8">
+            <!-- <label>Category</label>
+            <input name="drug_category_name" class="form-control" type="text"> -->
+            <label> {{supplierRegForm.supplier_phone.label}}</label>
+              {{supplierRegForm.supplier_phone}}
+          </div>
+        
+          
+        </div>
+        
+  </textarea>
+        <div class="form-group">
+  <div id="like_button_container"></div>
+
+          <button class="btn btn-dark btn-lg btn-block mt-15" id = "submit_supplier_data" type="submit">Register</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+    {% endblock %}

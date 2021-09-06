@@ -1,0 +1,55 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+Drug List
+{% endblock %}
+{% block content %}
+<div class="container">
+
+  <div class="row">
+
+
+    <div class="margin-right col-md-3" id="like_button_container"><a href="{% url 'inventory:drug_reg' %}"
+        class="btn btn-info btn-lg btn-block" type="submit">NEW DRUG</a></div>
+
+  </div>
+
+  <div class="row">
+    <div class="heading-line-bottom padding-auto">
+      <h2 class=" font-28">Drug List </h2>
+    </div>
+    <div class="col-md-12">
+      {% if drug_recs_error %}
+      <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button"> × </button>
+        Error ! Try again please.
+      </div>
+    </div>
+    {% endif %}
+    <div data-example-id="simple-table" class="bs-example">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Common Name</th>
+            <th>Brand Name</th>
+            <th>Chemical Name</th>
+            <th>Type</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {% for drug_rec in drug_recs %}
+          <tr>
+            <td><a href="{% url 'inventory:drug_detail' drug_rec.pk %}">{{drug_rec.item_name}}</a></td>
+            <td>{{drug_rec.brand_name}}</td>
+            <td>{{drug_rec.chemical_name}}</td>
+            <td><span class="badge">{{drug_rec.item_type}}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

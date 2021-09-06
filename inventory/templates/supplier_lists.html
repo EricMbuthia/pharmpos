@@ -1,0 +1,54 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+Suppliers List
+{% endblock %}
+{% block content %}
+<div class="container">
+
+  <div class="row">
+
+
+    <div class="margin-right col-md-3" id="like_button_container"><a href="{% url 'inventory:supplier_registration' %}"
+        class="btn btn-info btn-lg btn-block" type="submit">NEW Supplier</a></div>
+
+  </div>
+
+  <div class="row">
+    <div class="heading-line-bottom padding-auto">
+      <h2 class=" font-28">Suppliers List </h2>
+    </div>
+    <div class="col-md-12">
+      {% if supplier_recs_error %}
+      <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button"> × </button>
+        Error ! Try again please.
+      </div>
+    </div>
+    {% endif %}
+    <div data-example-id="simple-table" class="bs-example">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Supplier Name</th>
+            <th>Email Address</th>
+            <th>Phone Number</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {% for supplier_rec in supplier_recs %}
+          <tr>
+            <td><a href="{% url 'inventory:supplier_detail' supplier_rec.pk %}">{{supplier_rec.name}}</a></td>
+            <td>{{supplier_rec.email}}</td>
+            <td>{{supplier_rec.phone}}</td>
+            
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

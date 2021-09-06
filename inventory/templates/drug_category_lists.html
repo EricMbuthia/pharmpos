@@ -1,0 +1,39 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+Drug Category List
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="heading-line-bottom">
+      <h4 class="heading-title">Drug Category List</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% if drug_cat_recs_error %}
+      <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button"> × </button>
+        Error ! Try again please. </div>
+    </div>
+						{% endif %}
+          <div data-example-id="simple-table" class="bs-example"> <table class="table">
+                <thead>
+                     <tr> 
+                          <th>name</th>
+                           <th>description</th>
+                             
+
+                        </tr> </thead> 
+                        <tbody> 
+                            {% for drug_cat_rec in drug_cat_recs %}
+                            <tr> 
+                                <td><a href="{% url 'inventory:drug_category_detail' drug_cat_rec.pk %}">{{drug_cat_rec.name}}</a></td> 
+                                <td>{{drug_cat_rec.description}}</td> 
+                            </tr> 
+                            {% endfor %}
+                        </tbody> </table>
+
+          </div>
+        </div>
+      </div>
+{% endblock %}

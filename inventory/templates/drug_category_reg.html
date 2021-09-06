@@ -1,0 +1,55 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+Drug Category Registration
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+
+    
+    <div class="col-md-6 col-md-push-3">
+      <div id = "my_alert_box"></div>
+      {% if drugCategoryRegForm.errors %}
+      <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button"> × </button>
+        Error ! Check Your data please. </div>
+    </div>
+						{% endif %}
+      <form name="reg-form" id = "new_drug_category_form" class="register-form" method="post">
+     <h3 class="font-28">Register Drug Categories</h2>
+      {% csrf_token %}
+
+        <hr>
+        <div class="row">
+          <div class="form-group col-md-8">
+            <!-- <label>Category</label>
+            <input name="drug_category_name" class="form-control" type="text"> -->
+            <label> {{drugCategoryRegForm.drug_category_name.label}}</label>
+              {{drugCategoryRegForm.drug_category_name}}
+          </div>
+          
+        </div>
+        <div class="row">
+          <div class="form-group col-md-12">
+            <!-- <label for="Description">Descritption</label> -->
+            <label> {{drugCategoryRegForm.drug_category_description.label}} </label>
+            
+          </div>
+        </div>
+        <div class="row">
+          <!-- <textarea id="form_choose_username" name="drug_category_description" rows="4" cols="50"> -->
+            {{drugCategoryRegForm.drug_category_description}}
+          </div>
+  </textarea>
+        <div class="form-group">
+  <div id="like_button_container"></div>
+
+          <button class="btn btn-dark btn-lg btn-block mt-15" id = "submit_drug_category_data" type="submit">Register</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+    {% endblock %}

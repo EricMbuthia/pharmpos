@@ -1,0 +1,14 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+Supplier Confirm Deletion
+{% endblock %}
+
+{% block content %}
+	<form method="post">
+		{% csrf_token %}
+		<p>Are you sure you want to delete "{{ object }}"?</p>
+		    <input type="submit" value="Confirm" />
+
+	</form>
+{% endblock %}

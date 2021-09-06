@@ -1,0 +1,66 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+Inventory Drug Detail
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <h2 class ="text-theme-colored2 font-36">{{product_detail.product_common_name}}</h2>
+        <h2 class=" font-28">{{product_detail.product_chemical_name}} (<i>{{product_detail.product_brand_name}}</i>)</h2>    
+
+        <div class="col-md-6 col-md-push-3">
+            <div id="my_alert_box"></div>
+            {% if updateQuantityForm.errors %}
+            <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button"> × </button>
+                Error ! Check Your data please.
+            </div>
+        </div>
+        {% endif %}
+        <div class="col-md-12">
+            {% if quantity_errors %}
+            <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button"> × </button>
+                Error ! Could not fetch drug.
+            </div>
+            {% endif %}
+        </div>
+        <form name="reg-form" id="update_inventory_form" class="register-form" method="post">
+            <div class="form-group row">
+                <h3 class="col-md-9 font-28">{{product_detail.store_name}} </h2>
+                <div class = "col-md-3" id="like_button_container"><a href="{% url 'inventory:inventory_delete' inventory_id %}"class="btn btn-danger btn-sm btn-block"
+                    type="submit">Delete</a></div>
+                
+                
+            </div>
+            
+                {% csrf_token %}
+
+                <hr>
+                <div class="row">
+                    <div class="form-group col-md-8">
+                        <!-- <label>Category</label>
+            <input name="drug_category_name" class="form-control" type="text"> -->
+                        <label> {{updateQuantityForm.quantity.label}}</label>
+                        {{updateQuantityForm.quantity}}
+                    </div>
+                   
+                    <div style= "display:none;"> {{updateQuantityForm.product_id}}</div>
+                    <div style= "display:none;"> {{updateQuantityForm.store_id}}</div>
+
+                </div>
+
+                </textarea>
+                <div class="form-group">
+                    <div id="like_button_container"></div>
+
+                    <button class="btn btn-dark btn-lg btn-block mt-15" id="submit_inventory_update_data"
+                        type="submit">Update</button>
+                </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
