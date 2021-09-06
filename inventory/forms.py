@@ -2,7 +2,11 @@ from django import forms
 from django.conf import settings
 # from django.core import validators 
 from django.core.exceptions import ValidationError
+<<<<<<< HEAD
 from django.forms.widgets import NumberInput, TextInput
+=======
+from django.forms.widgets import TextInput
+>>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
 from .models import ProductType, Stores, Products
 def validate_item_id(item_id):
     print("Validate ITEM ID")
@@ -53,7 +57,11 @@ class StoreRegForm(forms.Form):
 class InventoryRegForm(forms.Form):
     product = forms.ChoiceField(choices =  drug_choices)
     store = forms.ChoiceField(choices = store_choices)
+<<<<<<< HEAD
     quantity =  forms.IntegerField(widget = NumberInput(attrs = {'class': 'form-control'}), label = "Quantinty in Store")
+=======
+    quantity =  forms.CharField(widget = TextInput(attrs = {'class': 'form-control'}), label = "Quantinty in Store")
+>>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
     store_id = forms.IntegerField( validators = [validate_item_id], required = False,)
 
 ##Assign Store Form
@@ -71,6 +79,7 @@ class AssignStoreForm(forms.Form):
 class UpdateQauntityForm(forms.Form):
     product_id = forms.IntegerField( validators = [validate_item_id], required = False,)
     store_id = forms.IntegerField( validators = [validate_item_id], required = False,)
+<<<<<<< HEAD
     quantity = forms.IntegerField( widget = forms.NumberInput(attrs = {"class":'form-class'}), label = "Quantity")
 
 
@@ -80,3 +89,6 @@ class SupplierRegForm(forms.Form):
     supplier_email = forms.EmailField(widget = forms.EmailInput(attrs= {'class': 'form-control'}),label = "Email Address" )
     supplier_phone = forms.IntegerField(widget = forms.NumberInput(attrs = {"class":'form-class'}), label = "Phone Number" )
     supplier_id = forms.IntegerField( validators = [validate_item_id], required = False,)
+=======
+    quantity = forms.CharField(widget = TextInput(attrs = {"class": "form-control"}), label = "Quantity")
+>>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487

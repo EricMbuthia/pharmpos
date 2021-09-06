@@ -46,6 +46,7 @@ urlpatterns = [
     path('inventory_quantity_update', views.inventory_quantity_update, name='inventory_quantity_update'),
     # path('inventory_delete/<pk>/', views.InventoryDelete.as_view(), name = "inventory_delete"),
     path('inventory_delete/<pk>/', views.inventory_delete, name = "inventory_delete"),
+<<<<<<< HEAD
     path('inventory_store_list', views.inventory_store_list, name='inventory_store_list'),
 
     ##Supplier CRUD
@@ -56,6 +57,11 @@ urlpatterns = [
     path('supplier_update', views.supplier_update,name='supplier_update'),
 
     path('supplier_delete/<pk>/', views.SupplierDelete.as_view(), name = "supplier_delete"),
+=======
+
+
+    path('inventory_store_list', views.inventory_store_list, name='inventory_store_list'),
+>>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
 
     
 

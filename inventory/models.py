@@ -19,12 +19,16 @@ class Products(models.Model):
     item_type = models.ForeignKey(ProductType , on_delete = models.CASCADE)
     brand_name = models.CharField(max_length = 100)
     chemical_name = models.CharField(max_length = 100)
+<<<<<<< HEAD
     receiving_name =  models.CharField(max_length = 100,  null= True )
     receiving_number = models.IntegerField( null = True)
     dispensing_name = models.CharField(max_length = 100, null = True)
     dispensing_number = models.IntegerField(  null = True)
     date_time_entered = models.DateTimeField(default = timezone.now() )
     
+=======
+    date_time_entered = models.DateTimeField(default = timezone.now() )
+>>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
 
     def __str__(self):
         return self.item_name
@@ -77,6 +81,7 @@ class ExternalOrder(models.Model):
 ###Look for template to capture data with the right grouping of drugs
     def __str__(self):
         return self.date_time_entry
+<<<<<<< HEAD
 class ReceivingTemplate(models.Model):
     receiving_unit_name =  models.CharField(max_length = 100)
     receiving_unit_number = models.IntegerField()
@@ -84,6 +89,8 @@ class ReceivingTemplate(models.Model):
     dispensing_unit_number = models.IntegerField()
     def __str__(self):
         return self.receiving_unit_name
+=======
+>>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
 
 class InventoryCard(models.Model):
     product_moving = models.ForeignKey(Products , on_delete = models.CASCADE)

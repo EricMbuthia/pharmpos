@@ -218,7 +218,11 @@ $("#submit_new_store_data").click(function(e){
     return false
 });
 
+<<<<<<< HEAD
 //Update Inventory 
+=======
+//Update Drugs
+>>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
 $("#submit_inventory_update_data").click(function(e){
     e.preventDefault();
     new_drug_category_data = $('#update_inventory_form').serialize();
@@ -249,6 +253,7 @@ $("#submit_inventory_update_data").click(function(e){
     return false
 });
 
+<<<<<<< HEAD
 //SUPPLIER CRUD 
 
 //New Supplier Registration
@@ -311,6 +316,12 @@ $("#submit_supplier_update_data").click(function(e){
     });
     return false
 });
+=======
+
+
+
+
+>>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
 
 
 
