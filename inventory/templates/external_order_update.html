@@ -1,0 +1,467 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+External Order Update
+{% endblock %}
+{% block content %}
+    <!-- Section: Schedule -->
+
+    <section class="inner-header divider layer-overlay overlay-white-8" >
+        <div class="container pt-120 pb-60">
+          <!-- Section Content -->
+          <div class="section-content">
+            <div class="row"> 
+              <div class="col-md-6">
+                <h2 class="text-theme-colored2 font-36">Invoice No <small>{{external_info_dict.invoice_number}}</small></h2>
+                
+                <ul class="list-inline mb-15">
+                    <li>
+                      <i class="pe-7s-user text-theme-colored2 font-48"></i>
+                      <div class="pull-right ml-5">
+                        <span>Supplier</span>
+                        <h5 class="mt-0">{{external_info_dict.supplier}}</h5>
+                      </div>
+                    </li>
+                    <li>
+                      <i class="pe-7s-ribbon text-theme-colored2 font-48"></i>
+                      <div class="pull-right ml-5">
+                        <span>Destination Store</span>
+                        <h5 class="mt-0">{{external_info_dict.destination_store}}</h5>
+                      </div>
+                    </li>
+                    <li>
+                      <i class="pe-7s-cash text-theme-colored2 font-48"></i>
+                      <div class="pull-right ml-10">
+                        <span>Approval Status</span>
+                        <h5 class="mt-0">{{external_info_dict.approval}}</h5>
+                      </div>
+                    </li>
+                  </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    <section id="schedule" class="divider parallax layer-overlay overlay-white-8" >
+        <div class="container pt-80 pb-60">
+          <div class="section-content">
+            <div class="row">
+                <div class="col-md-12">
+                  <div class="heading-line-bottom">
+                    <h4 class="heading-title">Drug Searched</h4>
+                  </div>
+                  <form action="#">
+                    <div class="row">
+                      <div class="form-group col-md-4">
+                        <label>{{drugIntakeForm.item_name.label}}</label>
+                    {{drugIntakeForm.item_name}}    
+                    </div>
+                      <div class="form-group col-md-4">
+                        <label>{{drugIntakeForm.brand_name.label}}</label>
+                        {{drugIntakeForm.brand_name}}
+
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label>{{drugIntakeForm.chemical_name.label}}</label>
+                    {{drugIntakeForm.chemical_name}}    
+                    </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                          <label>{{drugIntakeForm.receiving_name.label}}</label>
+                        {{drugIntakeForm.receiving_name}}  
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label>{{drugIntakeForm.receiving_number.label}}</label>
+                          {{drugIntakeForm.receiving_number}}
+
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label>{{drugIntakeForm.dispensing_name.label}}</label>
+                        {{drugIntakeForm.dispensing_name}}  
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-3">
+                          <label>{{drugIntakeForm.dispensing_number.label}}</label>
+                        {{drugIntakeForm.dispensing_number}}  
+                        </div>
+                        <div class="form-group col-md-3">
+                          
+                          {{drugIntakeForm.drug_id}}
+                          {{drugIntakeForm.total_price}}
+                        </div>
+                        <div class="form-group col-md-3">
+                          <label>{{drugIntakeForm.quantity.label}}</label>
+                        {{drugIntakeForm.quantity}}  
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>{{drugIntakeForm.price.label}}</label>
+                          {{drugIntakeForm.price}}  
+                          </div>
+                      </div>
+                    
+                   
+                    
+                    <div class="form-group">
+                      <button onclick = "newElement()" class="btn btn-default">Add To List</button>
+                    </div>
+                  </form>
+                </div>
+                </div>
+
+            <div>Total Invoiced Amount<span class = "badge" >{{external_info_dict.total_invoiced_amount}}</span></div>
+            <div class="row">
+                <div class="col-md-12">
+            
+            <div class="btn-group">
+                <button id = "remove_items" onclick="grabSelected2()" class="btn btn-dark">Delete Selected</button>
+              </div>
+</div>
+</div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <table id = "external_order_list" class="table table-striped table-schedule">
+                  <thead>
+                    <tr class="bg-theme-colored">
+                        
+                      <th>Brand Name</th>
+                      <th>Chemical Name</th>
+                      <th>Quantity</th>
+                      <th>Receiving Form</th>
+                      <th>Price Per Each</th>
+                      <th>Total Price</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id = "external_order_list_tbody">
+                    {% if table_data %}
+                    {%for rec in table_data %}
+                    <tr>
+                      <td>{{rec.brand_name}}</td>
+                      <td>{{rec.chemical_name}}</td>
+                      <td>{{rec.quantity}}</td>
+                      <td>{{rec.receiving_name}}</td>
+                      <td>{{rec.price}}</td>
+                      <td>{{rec.total_price}}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <button id = "sub_formset">Submit Formset </button>
+      {% if table_data %}      
+      <form  id = "my_formset">
+        <input type = "text" name = "external_order_id" style="display: none;" value = "{{external_info_dict.external_order_id}}">
+        {% csrf_token %}
+        {% for form_rec in table_data %}
+        <div id ="formcheck{{form_rec.count}}">
+          <input type = "text" name = "item_name" value = "{{form_rec.item_name}}">
+          <input type = "text" name = "receiving_number" value = "{{form_rec.receiving_number}}">
+          <input type = "text" name = "dispensing_name" value = "{{form_rec.dispensing_name}}">
+          <input type = "text" name = "dispensing_number" value = "{{form_rec.dispensing_number}}">
+          <input type = "text" name = "brand_name" value = "{{form_rec.brand_name}}">
+          <input type = "text" name = "chemical_name" value = "{{form_rec.chemical_name}}">
+          <input type = "text" name = "receiving_name" value = "{{form_rec.receiving_name}}">
+          <input type = "text" name = "drug_id" value = "{{form_rec.drug_id}}">
+          <input type = "text" name = "quantity" value = "{{form_rec.quantity}}">
+          <input type = "text" name = "price" value = "{{form_rec.price}}">
+          <input type = "text" name = "total_price" value = "{{form_rec.total_price}}">
+        </div>
+        
+        {% endfor %}
+      
+        </form>
+        
+      {% else %}
+      <form  id = "my_formset">
+        <input type = "text" name = "external_order_id" style="display: none;" value = "{{external_info_dict.external_order_id}}">
+        {% csrf_token %}
+        </form>
+      {% endif %}
+      
+{% endblock %}
+
+{% block script %}
+
+<script>
+
+window.onload = (event) => {
+  console.log('page is fully loaded');
+
+
+    // Create a "close" button and append it to each list item
+  var myNodeTable = document.getElementsByTagName("TR");
+  //console.log(myNodeTable);
+  var i;
+  for (i = 0; i < myNodeTable.length; i++) {
+    // var span = document.createElement("SPAN");
+    // var span_checkmark = document.createElement("SPAN");
+    var div_check = document.createElement("DIV");
+    div_check.className = "checkbox";
+
+    var label_check =  document.createElement("LABEL");
+    // var txt = document.createTextNode("\u00D7");
+    // var td =  document.createElement("TD");
+    var td2 =  document.createElement("TD");
+    //var t = document.createTextNode("new cell");
+    var check_box = document.createElement("INPUT");
+    check_box.setAttribute("type", "checkbox");
+    check_box.setAttribute("name", "edit_check");
+    check_box.id = "check".concat(i.toString())
+    check_box.className = "select_mult_box";
+    // span_checkmark.className = "checkmark";
+    // span.className = "close";
+    label_check.appendChild(check_box);
+    div_check.appendChild(label_check);
+
+    // span.appendChild(txt);
+    // label.appendChild(check_box);
+    // label.appendChild(span_checkmark);
+    td2.appendChild(check_box);
+    // td.appendChild(span);
+    // myNodeTable[i].appendChild(td);
+    myNodeTable[i].appendChild(td2);
+  }
+  
+  // // Click on a close button to hide the current list item
+  // var close = document.getElementsByClassName("close1");
+  // var i;
+  // for (i = 0; i < close.length; i++) {
+  //   close[i].onclick = function() {
+  //     //var div = this.parentElement;
+  //     //div.style.display = "none";
+  //     //this.parentElement.remove();
+  //     console.log(this.parentElement.parentElement)
+  //     this.parentElement.parentElement.remove();
+  
+  //   }
+  // }
+  
+  
+};
+  //Grab selected and remove them from table
+  
+  function grabSelected2(){
+  var checkboxes = document.querySelectorAll('input[class="select_mult_box"]:checked');
+      for (var checkbox of checkboxes) {
+          //document.body.append(checkbox.value + ' ');
+          //Remove from Table
+          console.log(checkbox.parentElement.parentElement);
+          checkbox.parentElement.parentElement.remove();
+        //remove from form using id
+          external_order_form =  document.getElementById("my_formset");
+          form_delete_id = document.getElementById("form".concat(checkbox.id));
+          console.log("External Order Form");
+          console.log(external_order_form);
+          console.log("form delete id");
+          console.log("form".concat(checkbox.id));
+          form_delete_id.remove();
+
+      }
+  }
+  
+  // Create a new list item when clicking on the "Add" button
+  function newElement() {
+  //Add to the Data Table Below
+    // var li = document.createElement("li");
+    var tr = document.createElement("tr");
+    var td1 = document.createElement("td");
+    var td2 = document.createElement("td");
+    var td3 = document.createElement("td");
+    var td4 = document.createElement("td");
+    var td5 = document.createElement("td");
+    var td6 = document.createElement("td");
+    var td7 = document.createElement("td");
+
+    // var span = document.createElement("SPAN");
+    // var span_checkmark = document.createElement("SPAN");
+    var div_check = document.createElement("DIV");
+    div_check.className = "checkbox";
+    var label_check =  document.createElement("LABEL");
+    // var txt = document.createTextNode("\u00D7");
+    var check_my_box = document.createElement("INPUT");
+    check_my_box.setAttribute("type", "checkbox");
+    check_my_box.setAttribute("name", "edit_check");
+    check_my_box.className = "select_mult_box";
+    check_my_box.id = "check".concat(document.getElementsByTagName("TR").length.toString());
+
+    // span_checkmark.className = "checkmark";
+    // span.className = "close";
+    // span.appendChild(txt);
+    try {
+  // alert("Welcome guest!");
+  div_check.appendChild(check_my_box);
+  console.log("check box");
+  console.log(check_my_box);
+  console.log("div check");
+  console.log(div_check);
+}
+catch(err) {
+  console.log( err.message);
+}
+    
+    // div_check.appendChild(label_check);
+    console.log(div_check);
+    
+//     brand_name
+// chemical_name
+// receiving_name
+// drug_id
+// quantity
+// price
+//get values
+    var brandNameValue = document.getElementById("brand_name").value;
+    var chemicalNameValue = document.getElementById("chemical_name").value;
+    console.log("chmecal value");
+    console.log(brandNameValue);
+    var receivingNameValue = document.getElementById("receiving_name").value;
+    var drugIdValue = 0; //document.getElementById("drug_id").value;
+    var quantityValue = document.getElementById("quantity").value;
+    var priceValue = document.getElementById("price").value;
+    var totalPriceValue = priceValue * quantityValue;
+    //Get names
+    var brandNameName = document.getElementById("brand_name").name;
+    var chemicalNameName = document.getElementById("chemical_name").name;
+    var receivingNameName = document.getElementById("receiving_name").name;
+    var drugIdName = document.getElementById("drug_id").name;
+    var quantityName = document.getElementById("quantity").name;
+    var priceName = document.getElementById("price").name;
+    var totalPriceName = document.getElementById("total_price").name;
+
+//create text nodes
+    var brandNameTextNode = document.createTextNode(brandNameValue);
+    var chemicalNameTextNode = document.createTextNode(chemicalNameValue);
+    var receivingNameTextNode = document.createTextNode(receivingNameValue);
+    var drugIdTextNode = document.createTextNode(drugIdValue);
+    var quantityTextNode = document.createTextNode(quantityValue);
+    var priceTextNode = document.createTextNode(priceValue);
+    var totalPriceTextNode = document.createTextNode(totalPriceValue);
+    
+    ///Form and elements
+    
+    my_formset =  document.getElementById("my_formset");
+    my_formset.setAttribute("method", "post");
+    var div_id = document.createElement("div");
+
+    var itemNameTextInput = document.createElement("input");
+    itemNameTextInput.setAttribute("type", "text");
+    var itemNameName = document.getElementById("item_name").name;
+    itemNameTextInput.setAttribute("name",itemNameName);
+
+    var brandNameTextInput = document.createElement("input");
+    brandNameTextInput.setAttribute("type", "text");
+    brandNameTextInput.setAttribute("name",brandNameName);
+
+    var chemicalNameTextInput = document.createElement("input");
+    chemicalNameTextInput.setAttribute("type", "text");
+    chemicalNameTextInput.setAttribute("name",chemicalNameName);
+
+    var receivingNameTextInput = document.createElement("input");
+    receivingNameTextInput.setAttribute("type", "text");
+    receivingNameTextInput.setAttribute("name",receivingNameName);
+
+    var receivingNumberTextInput = document.createElement("input");
+    receivingNumberTextInput.setAttribute("type", "text");
+    var receivingNumberName = document.getElementById("receiving_number").name;
+    receivingNumberTextInput.setAttribute("name",receivingNumberName);
+
+    var dispensingNameTextInput = document.createElement("input");
+    dispensingNameTextInput.setAttribute("type", "text");
+    var dispensingNameName = document.getElementById("dispensing_name").name;
+    dispensingNameTextInput.setAttribute("name",dispensingNameName);
+
+    var dispensingNumberTextInput = document.createElement("input");
+    dispensingNumberTextInput.setAttribute("type", "text");
+    var dispensingNumberName = document.getElementById("dispensing_number").name;
+    dispensingNumberTextInput.setAttribute("name",dispensingNumberName);
+
+    var drugIdTextInput = document.createElement("input");
+    drugIdTextInput.setAttribute("type", "text");
+    drugIdTextInput.setAttribute("name",drugIdName);
+
+    var quantityTextInput = document.createElement("input");
+    quantityTextInput.setAttribute("type", "text");
+    quantityTextInput.setAttribute("name",quantityName);
+
+    var priceTextInput = document.createElement("input");
+    priceTextInput.setAttribute("type", "text");
+    priceTextInput.setAttribute("name",priceName);
+
+    var totalPriceTextInput = document.createElement("input");
+    totalPriceTextInput.setAttribute("type", "text");
+    totalPriceTextInput.setAttribute("name",totalPriceName);
+    
+    
+    
+    //li.appendChild(t);
+    if (brandNameValue ===''|| chemicalNameValue === '' || receivingNameValue === '' || drugIdValue === '' || quantityValue ==='' || priceValue ==='' ) {
+      alert("Please select and fill in the form!");
+    } else {
+    
+    
+      //Feed form
+    itemNameTextInput.value = document.getElementById("item_name").value;
+    receivingNumberTextInput.value = document.getElementById("receiving_number").value;
+    dispensingNameTextInput.value = document.getElementById("dispensing_name").value;
+    dispensingNumberTextInput.value = document.getElementById("dispensing_number").value;
+    brandNameTextInput.value =brandNameValue;
+    console.log("brandNameTextInput");
+    console.log(brandNameTextInput.value);
+    chemicalNameTextInput.value =chemicalNameValue;
+    receivingNameTextInput.value =receivingNameValue;
+    drugIdTextInput.value =drugIdValue;
+    quantityTextInput.value =quantityValue;
+    priceTextInput.value =priceValue;
+    totalPriceTextInput.value = totalPriceValue;
+    div_id.setAttribute("id", "form".concat( check_my_box.id));
+    div_id.appendChild(itemNameTextInput);
+    div_id.appendChild(receivingNumberTextInput);
+    div_id.appendChild(dispensingNameTextInput);
+    div_id.appendChild(dispensingNumberTextInput);
+    div_id.appendChild(brandNameTextInput);
+    div_id.appendChild(chemicalNameTextInput);
+    div_id.appendChild(receivingNameTextInput);
+    div_id.appendChild(drugIdTextInput);
+    div_id.appendChild(quantityTextInput);
+    div_id.appendChild(priceTextInput);
+    div_id.appendChild(totalPriceTextInput);
+    div_id.appendChild(check_my_box);
+    my_formset.append(div_id);
+      //Feed Table
+      td1.appendChild(brandNameTextNode);
+      td2.appendChild(chemicalNameTextNode);
+      td3.appendChild(quantityTextNode);
+      td4.appendChild(receivingNameTextNode);
+      td5.appendChild(priceTextNode);
+      td6.appendChild(totalPriceTextNode);
+      td7.appendChild(check_my_box);
+
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      tr.appendChild(td4);
+      tr.appendChild(td5);
+      tr.appendChild(td6);
+      tr.appendChild(td7);
+      document.getElementById("external_order_list_tbody").appendChild(tr);
+      //document.getElementById("myUL").appendChild(li);
+    }
+    //Empty the the text boxes after adding element
+     document.getElementById("brand_name").value = "";
+     document.getElementById("chemical_name").value = "";
+     document.getElementById("drug_id").value = "";
+     document.getElementById("quantity").value = "";
+     document.getElementById("price").value = "";  
+  }
+
+  </script>
+
+{% endblock %}

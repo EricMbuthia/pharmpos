@@ -166,16 +166,14 @@
                 
               </li>
               <li><a href="#">External Orders</a>
-<<<<<<< HEAD
                 <ul class="dropdown">
                   <li><a href="{% url 'inventory:supplier_registration' %}">Create Supplier</a></li>
                   <li><a href="{% url 'inventory:display_suppliers' %}">Suppliers List</a></li>
-                  <li><a href="{% url 'inventory:display_stores' %}">Create External Order</a></li>
+                  <li><a href="{% url 'inventory:display_external_orders' %}">External Order List</a></li>
+                  <li><a href="{% url 'inventory:create_external_order' %}">Create External Order</a></li>
 
 
                 </ul>
-=======
->>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
                 <!--Make External Order-->
               </li>
               <li><a href="{% url 'inventory:display_drug_categories' %}">List Drug Categories</a>
@@ -219,6 +217,8 @@
 <!-- end wrapper -->
 
 <!-- Footer Scripts -->
+{% block script %}
+{% endblock %}
 <!-- JS | Custom script for all pages -->
 <script src="{% static 'js/custom.js' %}"></script>
 <script src= "{% static 'js/inventory_custom.js' %}"></script>

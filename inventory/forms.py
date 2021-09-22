@@ -2,12 +2,9 @@ from django import forms
 from django.conf import settings
 # from django.core import validators 
 from django.core.exceptions import ValidationError
-<<<<<<< HEAD
-from django.forms.widgets import NumberInput, TextInput
-=======
-from django.forms.widgets import TextInput
->>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
-from .models import ProductType, Stores, Products
+from django.forms.formsets import formset_factory
+from django.forms.widgets import NumberInput, Select, TextInput
+from .models import ProductType, Stores, Products, Suppliers
 def validate_item_id(item_id):
     print("Validate ITEM ID")
     print(item_id)
@@ -18,7 +15,9 @@ def validate_item_id(item_id):
     return item_id
 ##Drug Category Forms
 drug_category_choices = [(drug_cat.id, drug_cat.name ) for drug_cat in ProductType.objects.all()]
+# print(drug_category_choices)
 store_choices = [(store.id, store.storename ) for store in Stores.objects.all()]
+supplier_choices = [(supplier.id, supplier.name) for supplier in Suppliers.objects.all()]
 drug_choices = [(drug_rec.id, drug_rec.chemical_name) for drug_rec in Products.objects.all()]
 class DrugCategoryRegForm(forms.Form):
     drug_category_name = forms.CharField(widget = forms.TextInput(attrs= {'class': 'form-control'}),
@@ -36,6 +35,10 @@ class ProductsForm(forms.Form):
     item_type = forms.ChoiceField(choices= drug_category_choices)
     brand_name = forms.CharField(widget = forms.TextInput(attrs = {'class': 'form-control'}), label = "Brand Name")
     chemical_name = forms.CharField(widget = forms.TextInput(attrs = {'class': 'form-control'} ), label = "Chemical Name")
+    receiving_name = forms.CharField(widget =  forms.TextInput(attrs={"class": "form-control"}), label ="Recieving Form")
+    receiving_number = forms.CharField(widget = forms.TextInput(attrs={'class': "form-control"}), label = "Receing Quantity")
+    dispensing_name = forms.CharField(widget = forms.TextInput(attrs= {"class":"form-control"}), label = "Dispencing Form")
+    dispensing_number = forms.CharField(widget = forms.TextInput(attrs={"class":"form-control"}), label= "Dipensing Qauntity")
     # item_id = forms.CharField(widget = TextInput(attrs = {"value": "0"}), validators = [validate_item_id])
 class ProductsFormUpdate(forms.Form):
     item_name = forms.CharField(widget = forms.TextInput(attrs = {'class': 'form-control'}), label = "Commonly Known")
@@ -44,6 +47,10 @@ class ProductsFormUpdate(forms.Form):
     brand_name = forms.CharField(widget = forms.TextInput(attrs = {'class': 'form-control'}), label = "Brand Name")
     chemical_name = forms.CharField(widget = forms.TextInput(attrs = {'class': 'form-control'} ), label = "Chemical Name")
     item_id = forms.IntegerField( validators = [validate_item_id], required = False,)
+    receiving_name = forms.CharField(widget =  forms.TextInput(attrs={"class": "form-control"}), label ="Recieving Form")
+    receiving_number = forms.CharField(widget = forms.TextInput(attrs={'class': "form-control"}), label = "Receing Quantity")
+    dispensing_name = forms.CharField(widget = forms.TextInput(attrs= {"class":"form-control"}), label = "Dispencing Form")
+    dispensing_number = forms.CharField(widget = forms.TextInput(attrs={"class":"form-control"}), label= "Dipensing Qauntity")
 
 
 #### Stores Forms##############
@@ -55,18 +62,14 @@ class StoreRegForm(forms.Form):
 #####INVENTORY FORMS ###########
 ##Inventory Registration
 class InventoryRegForm(forms.Form):
-    product = forms.ChoiceField(choices =  drug_choices)
-    store = forms.ChoiceField(choices = store_choices)
-<<<<<<< HEAD
+    product = forms.ChoiceField(widget =forms.Select(attrs = {"class": "form-control"}),choices =  drug_choices)
+    store = forms.ChoiceField(widget= forms.Select(attrs={"class": "form-control"}),choices = store_choices, label ="Store")
     quantity =  forms.IntegerField(widget = NumberInput(attrs = {'class': 'form-control'}), label = "Quantinty in Store")
-=======
-    quantity =  forms.CharField(widget = TextInput(attrs = {'class': 'form-control'}), label = "Quantinty in Store")
->>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
     store_id = forms.IntegerField( validators = [validate_item_id], required = False,)
 
 ##Assign Store Form
 class AssignStoreForm(forms.Form):
-    store = forms.ChoiceField(choices = [], label = "Stores Absent")
+    store = forms.ChoiceField(widget= forms.Select(attrs= {"class": "form-class"}),choices = [], label = "Stores Absent")
     quantity =  forms.IntegerField( label = "Quantinty in Store")
     product_id = forms.IntegerField( validators = [validate_item_id], required = False,)
     def __init__(self, absent_stores,product_id, *args, **kwargs):
@@ -79,16 +82,30 @@ class AssignStoreForm(forms.Form):
 class UpdateQauntityForm(forms.Form):
     product_id = forms.IntegerField( validators = [validate_item_id], required = False,)
     store_id = forms.IntegerField( validators = [validate_item_id], required = False,)
-<<<<<<< HEAD
     quantity = forms.IntegerField( widget = forms.NumberInput(attrs = {"class":'form-class'}), label = "Quantity")
 
 
 #### Supplier Forms##############
 class SupplierRegForm(forms.Form):
-    supplier_name = forms.CharField(widget = forms.TextInput(attrs= {'class': 'form-control'}),label = "Supplier Name" )
+    supplier_name = forms.CharField(widget = forms.TextInput(attrs= {'class': 'form-control', "id":"sup_nam"}),label = "Supplier Name" )
     supplier_email = forms.EmailField(widget = forms.EmailInput(attrs= {'class': 'form-control'}),label = "Email Address" )
     supplier_phone = forms.IntegerField(widget = forms.NumberInput(attrs = {"class":'form-class'}), label = "Phone Number" )
     supplier_id = forms.IntegerField( validators = [validate_item_id], required = False,)
-=======
-    quantity = forms.CharField(widget = TextInput(attrs = {"class": "form-control"}), label = "Quantity")
->>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
+
+class CreateExternalOrderForm(forms.Form):
+    invoice_number = forms.CharField(widget = TextInput(attrs = {"class": "form-control"}), label = "Invoice Number")
+    supplier = forms.ChoiceField(widget = forms.Select(attrs={"class": 'form-class'}), choices= supplier_choices, label= "Supplier")
+    destination_store = forms.ChoiceField(widget= forms.Select(attrs = {"class":'form-class'}), choices = store_choices,  label = "Destination Store")
+class DrugIntakeForm(forms.Form):
+    item_name = forms.CharField(widget = forms.TextInput(attrs = {"class": "form-control", "id":"item_name"}),disabled = False,label = "Common Name")
+    brand_name = forms.CharField(widget = forms.TextInput(attrs= {"class": "form-control", "id":"brand_name"}), disabled =False,label = "Brand Name")
+    chemical_name =  forms.CharField(widget = forms.TextInput(attrs = {"class":"form-control", "id":"chemical_name"}),disabled = False, label = "Chemical Name")
+    receiving_name = forms.CharField(widget= forms.TextInput(attrs= {"class":"form-control", "id":"receiving_name"}), disabled = False, label = "Receiving Form")
+    receiving_number =  forms.CharField(widget = forms.TextInput(attrs= {"class":"form-control", "id":"receiving_number"}),disabled = False,label = "Receiving Quantity")
+    dispensing_name = forms.CharField(widget = forms.TextInput(attrs ={"class":"form-control", "id":"dispensing_name"}), disabled = False, label = "Dispencing Form")
+    dispensing_number = forms.CharField(widget= forms.TextInput(attrs= {"class":"form-control", "id":"dispensing_number"}), disabled = False,label = "Dispensing Number")
+    drug_id = forms.IntegerField(widget = forms.NumberInput(attrs ={"style": "display: None;", "id":"drug_id"}) ,required= False)
+    quantity =  forms.IntegerField(widget = forms.NumberInput(attrs= {"class":"form-control", "id":"quantity"}), label = "Quantity Ordered")
+    price =  forms.FloatField(widget = forms.NumberInput(attrs= {"class":"form-control", "id":"price"}), label = "Price Per Each")
+    total_price =  forms.FloatField(widget = forms.NumberInput(attrs= {"class":"form-control", "id":"total_price", "style": "display: None;",}), disabled=True ,label = "Total Price")
+    # edit_check = forms.ChoiceField(widget = forms.CheckboxInput(attrs = {"class":"form-control"}), label = "Edit Check" )

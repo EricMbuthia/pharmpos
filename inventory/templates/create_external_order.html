@@ -1,0 +1,102 @@
+{% extends 'inventory_layout.html' %}
+{% load static %}
+{% block title %}
+Create external Order
+{% endblock %}
+
+{% block content %}
+<!-- Section: home -->
+<section id="home" class="divider parallax layer-overlay overlay-dark-9" data-bg-img="http://placehold.it/1920x820">
+    <div class="display-table">
+      <div class="display-table-cell">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 col-md-push-3">
+              <div class="text-center mb-60"><a href="#" class=""><img alt="" src="images/logo-wide.png"></a>
+              </div>
+
+              
+              <div class="bg-lightest border-1px p-30 mb-0">
+                <h3 class="text-theme-colored mt-0 pt-5"> Create External Order</h3>
+
+                <hr>
+                
+                    
+                <div class="row">
+                    <div id="my_alert_box"></div>
+                    {% if createExternalOrderForm.errors %}
+                    <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button"> × </button>
+                        Error ! Check Your data please.
+                    </div>
+                    {% endif %}
+                </div>
+                <p></p>
+                <form id="create_external_order_form" name="job_apply_form" >
+                  <div class="row">
+                    
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>{{createExternalOrderForm.invoice_number.label}} <small>*</small></label>
+                        {{createExternalOrderForm.invoice_number}}
+                        <!-- <input name="form_name" type="text" placeholder="Enter Name" required="" class="form-control"> -->
+                      </div>
+                    </div>
+                    {% csrf_token %}
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>{{createExternalOrderForm.supplier.label}} <small>*</small></label>
+                        {{createExternalOrderForm.supplier}}
+                        <!-- <input name="form_email" class="form-control required email" type="email" placeholder="Enter Email"> -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">               
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>{{createExternalOrderForm.destination_store.label}} <small>*</small></label>
+                        {{createExternalOrderForm.destination_store}}
+                      </div>
+                    </div>
+                    <div class = "col-sm-6">
+                        <div class="form-group">
+                            <!-- <input name="form_botcheck" class="form-control" type="hidden" value="" /> -->
+                            <button type="submit" id = "create_external_order_button" class="btn btn-block btn-dark btn-theme-colored btn-sm mt-20 pt-10 pb-10" data-loading-text="Please wait...">Create</button>
+                          </div>
+                    </div>
+                    
+                  </div>
+                  
+                  
+                </form>
+                <!-- Job Form Validation-->
+                <script type="text/javascript">
+                  $("#job_apply_form").validate({
+                    submitHandler: function(form) {
+                      var form_btn = $(form).find('button[type="submit"]');
+                      var form_result_div = '#form-result';
+                      $(form_result_div).remove();
+                      form_btn.before('<div id="form-result" class="alert alert-success" role="alert" style="display: none;"></div>');
+                      var form_btn_old_msg = form_btn.html();
+                      form_btn.html(form_btn.prop('disabled', true).data("loading-text"));
+                      $(form).ajaxSubmit({
+                        dataType:  'json',
+                        success: function(data) {
+                          if( data.status == 'true' ) {
+                            $(form).find('.form-control').val('');
+                          }
+                          form_btn.prop('disabled', false).html(form_btn_old_msg);
+                          $(form_result_div).html(data.message).fadeIn('slow');
+                          setTimeout(function(){ $(form_result_div).fadeOut('slow') }, 6000);
+                        }
+                      });
+                    }
+                  });
+                </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> 
+{% endblock %}

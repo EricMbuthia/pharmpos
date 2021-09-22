@@ -10,7 +10,6 @@ admin.site.register(Stores)
 admin.site.register(Inventory)
 admin.site.register(Suppliers)
 admin.site.register(ExternalOrder)
-<<<<<<< HEAD
 admin.site.register(InventoryCard)
 
 class ReceivingTemplateAdmin(admin.ModelAdmin):
@@ -26,6 +25,3 @@ class ReceivingTemplateAdmin(admin.ModelAdmin):
         })
     )
 admin.site.register(ReceivingTemplate, ReceivingTemplateAdmin)
-=======
-admin.site.register(InventoryCard)
->>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487

@@ -46,7 +46,6 @@ urlpatterns = [
     path('inventory_quantity_update', views.inventory_quantity_update, name='inventory_quantity_update'),
     # path('inventory_delete/<pk>/', views.InventoryDelete.as_view(), name = "inventory_delete"),
     path('inventory_delete/<pk>/', views.inventory_delete, name = "inventory_delete"),
-<<<<<<< HEAD
     path('inventory_store_list', views.inventory_store_list, name='inventory_store_list'),
 
     ##Supplier CRUD
@@ -55,15 +54,18 @@ urlpatterns = [
     path('display_suppliers', views.display_suppliers, name='display_suppliers'),
     path('supplier_detail/<int:pk>/', views.supplier_detail, name='supplier_detail'),
     path('supplier_update', views.supplier_update,name='supplier_update'),
-
     path('supplier_delete/<pk>/', views.SupplierDelete.as_view(), name = "supplier_delete"),
-=======
 
+    #External Orders 
 
-    path('inventory_store_list', views.inventory_store_list, name='inventory_store_list'),
->>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
+    path("create_external_order",views.create_external_order, name = "create_external_order"),
+    path("display_external_orders",views.display_external_orders, name = "display_external_orders"),
+    path("external_order_detail/<int:pk>",views.external_order_detail, name = "external_order_detail"),
+    path("external_order_update",views.external_order_update, name = "external_order_update"),
 
     
+
+
 
     
 

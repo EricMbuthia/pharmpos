@@ -9,13 +9,13 @@ $(function(){
             url:"/inventory/drug_category_reg",
             data:new_drug_category_data,
             beforeSend:function(){
-                // alert("beforeSend");
+                 alert("beforeSend");
 
             },
             cache: false,
             dataType: "json",
             success: function(data){
-                //alert(new_drug_category_data);
+                alert(new_drug_category_data);
                 if (data.status === "ok"){
                     $("#my_alert_box").append("<div class='alert alert-success alert-dismissable'><button aria-hidden='true' data-dismiss='alert' class='close' type='button'> × </button>Drug Category Successfuly saved. </div></div>");
                     $("#new_drug_category_form")[0].reset();
@@ -71,13 +71,13 @@ $("#submit_drug_data").click(function(e){
         url:"/inventory/drug_reg",
         data:new_drug_category_data,
         beforeSend:function(){
-            // alert("beforeSend");
+            alert("beforeSend");
 
         },
         cache: false,
         dataType: "json",
         success: function(data){
-            //alert(new_drug_category_data);
+            alert(new_drug_category_data);
             if (data.status === "ok"){
                 $("#my_alert_box").append("<div class='alert alert-success alert-dismissable'><button aria-hidden='true' data-dismiss='alert' class='close' type='button'> × </button>Drug Data Successfuly saved. </div></div>");
                 $("#new_drug_form")[0].reset();
@@ -218,11 +218,7 @@ $("#submit_new_store_data").click(function(e){
     return false
 });
 
-<<<<<<< HEAD
 //Update Inventory 
-=======
-//Update Drugs
->>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
 $("#submit_inventory_update_data").click(function(e){
     e.preventDefault();
     new_drug_category_data = $('#update_inventory_form').serialize();
@@ -253,7 +249,6 @@ $("#submit_inventory_update_data").click(function(e){
     return false
 });
 
-<<<<<<< HEAD
 //SUPPLIER CRUD 
 
 //New Supplier Registration
@@ -316,12 +311,73 @@ $("#submit_supplier_update_data").click(function(e){
     });
     return false
 });
-=======
 
 
+//EXTERNAL ORDER
+
+//Update Supplier Info
+$("#create_external_order_button").click(function(e){
+    e.preventDefault();
+    new_external_data = $('#create_external_order_form').serialize();
+    $.ajax({
+        type: "POST",
+        url:"/inventory/create_external_order",
+        data:new_external_data,
+        beforeSend:function(){
+            alert("beforeSend");
+
+        },
+        cache: false,
+        dataType: "json",
+        success: function(data){
+            alert("sending");
+            if (data.status === "ok"){
+                $("#my_alert_box").append("<div class='alert alert-success alert-dismissable'><button aria-hidden='true' data-dismiss='alert' class='close' type='button'> × </button>External Order Successfuly Created. </div></div>");
+                // $("#new_drug_form")[0].reset();
+                // location.reload();
+            }
+            if (data.status === "error"){
+                $("#my_alert_box").append("<div class='alert alert-danger alert-dismissable'><button aria-hidden='true' data-dismiss='alert' class='close' type='button'> × </button> Error! Please check your data again </div></div>");
+
+            }
+            
+        }
+    });
+    return false
+});
 
 
->>>>>>> 8c8472c2c43ffa7227b85880fdc9f3c767386487
+//Update Drugs (External Order)
+$("#sub_formset").click(function(e){
+    e.preventDefault();
+    update_external_data = $('#my_formset').serialize();
+    $.ajax({
+        type: "POST",
+        url:"/inventory/external_order_update",
+        data:update_external_data,
+        beforeSend:function(){
+            alert("beforeSend");
+
+        },
+        cache: false,
+        dataType: "json",
+        success: function(data){
+            alert("sending");
+            if (data.status === "ok"){
+                alert("Okay sent");
+                $("#my_alert_box").append("<div class='alert alert-success alert-dismissable'><button aria-hidden='true' data-dismiss='alert' class='close' type='button'> × </button>External Order Successfuly Created. </div></div>");
+                // $("#new_drug_form")[0].reset();
+                // location.reload();
+            }
+            if (data.status === "error"){
+                $("#my_alert_box").append("<div class='alert alert-danger alert-dismissable'><button aria-hidden='true' data-dismiss='alert' class='close' type='button'> × </button> Error! Please check your data again </div></div>");
+
+            }
+            
+        }
+    });
+    return false
+});
 
 
 

@@ -1,0 +1,193 @@
+https://djangocentral.com/django-ajax-with-jquery/
+
+Double entries prevention
+
+
+
+
+
+https://learndjango.com/tutorials/django-search-tutorial
+https://djangotricks.blogspot.com/2018/06/data-filtering-in-a-django-website-using-elasticsearch.html
+fiill these in a formset after searching intended drug
+create hidden form
+with csrftoken
+get form in Jquery
+append stuff in that form
+submit
+Grab form and put in a formset_factory grab or not
+
+
+https://medium.com/geekculture/how-to-use-elasticsearch-with-django-ff49fe02b58d
+https://django-elasticsearch-dsl-drf.readthedocs.io/en/0.3.12/advanced_usage_examples.html
+
+
+
+
+<script>
+    // Create a "close" button and append it to each list item
+  var myNodeTable = document.getElementsByTagName("TR");
+  //console.log(myNodeTable);
+  var i;
+  for (i = 0; i < myNodeTable.length; i++) {
+    var span = document.createElement("SPAN");
+    var span_checkmark = document.createElement("SPAN");
+    var label =  document.createElement("LABEL");
+    var txt = document.createTextNode("\u00D7");
+    var td =  document.createElement("TD");
+    var td2 =  document.createElement("TD");
+    //var t = document.createTextNode("new cell");
+    var check_box = document.createElement("INPUT");
+    check_box.setAttribute("type", "checkbox");
+    check_box.className = "select_mult_box";
+    label.className = "container";
+    span_checkmark.className = "checkmark";
+    span.className = "close";
+    span.appendChild(txt);
+    label.appendChild(check_box);
+    label.appendChild(span_checkmark);
+    td2.appendChild(label);
+    td.appendChild(span);
+    myNodeTable[i].appendChild(td);
+    myNodeTable[i].appendChild(td2);
+  }
+  
+  // Click on a close button to hide the current list item
+  var close = document.getElementsByClassName("close");
+  var i;
+  for (i = 1; i < close.length; i++) {
+    close[i].onclick = function() {
+      //var div = this.parentElement;
+      //div.style.display = "none";
+      //this.parentElement.remove();
+      console.log(this.parentElement.parentElement)
+      this.parentElement.parentElement.remove();
+  
+    }
+  }
+  
+  
+  
+  //Grab selected and remove them from table
+  
+  function grabSelected2(){
+  var checkboxes = document.querySelectorAll('input[class="select_mult_box"]:checked');
+      for (var checkbox of checkboxes) {
+          //document.body.append(checkbox.value + ' ');
+          console.log(checkbox.parentElement.parentElement.parentElement);
+              checkbox.parentElement.parentElement.parentElement.remove();
+      }
+  }
+  
+  // Create a new list item when clicking on the "Add" button
+  function newElement() {
+  //Add to the Data Table Below
+    var li = document.createElement("li");
+    var tr = document.createElement("tr");
+    var td1 = document.createElement("td");
+    var td2 = document.createElement("td");
+    var td3 = document.createElement("td");
+    var td4 = document.createElement("td");
+    var td5 = document.createElement("td");
+    var td6 = document.createElement("td");
+    
+    var span = document.createElement("SPAN");
+    var span_checkmark = document.createElement("SPAN");
+    var label =  document.createElement("LABEL");
+    var txt = document.createTextNode("\u00D7");
+    var check_box = document.createElement("INPUT");
+    check_box.setAttribute("type", "checkbox");
+    check_box.className = "select_mult_box";
+    label.className = "container";
+    span_checkmark.className = "checkmark";
+    span.className = "close";
+    span.appendChild(txt);
+    label.appendChild(check_box);
+    label.appendChild(span_checkmark);
+    td5.appendChild(span);
+    td6.appendChild(label);
+    
+    var inputValue1 = document.getElementById("myInput1").value;
+    var inputValue2 = document.getElementById("myInput2").value;
+    var inputValue3 = document.getElementById("myInput3").value;
+    var inputValue4 = document.getElementById("myInput4").value;
+    var t1 = document.createTextNode(inputValue1);
+    var t2 = document.createTextNode(inputValue2);
+    var t3 = document.createTextNode(inputValue3);
+    var t4 = document.createTextNode(inputValue4);
+    
+    ///Form and elements
+    
+    my_formset =  document.getElementById("my_formset");
+    my_formset.setAttribute("method", "post");
+    my_formset.setAttribute("action", "submit.php");
+    
+    var  myTextB1 = document.createElement("input");
+    myTextB1.setAttribute("type", "text");
+    myTextB1.setAttribute("name", "myTextB1");
+    var  myTextB2 = document.createElement("input");
+    myTextB2.setAttribute("type", "text");
+    myTextB2.setAttribute("name", "myTextB1");
+    var  myTextB3 = document.createElement("input");
+    myTextB3.setAttribute("type", "text");
+    myTextB3.setAttribute("name", "myTextB1");
+    var  myTextB4 = document.createElement("input");
+    myTextB4.setAttribute("type", "text");
+    myTextB4.setAttribute("name", "myTextB1");  
+    
+    
+    
+    //li.appendChild(t);
+    if (inputValue1 === '' || inputValue2 === '' || inputValue3 === '' || inputValue4 === '' ) {
+      alert("You must write something!");
+    } else {
+    
+    
+      //Feed form
+      myTextB1.value = inputValue1;
+      console.log("myTextq");
+      console.log(myTextB1.value);
+      myTextB2.setAttribute("value", inputValue2);
+      myTextB3.setAttribute("value", t3);
+      myTextB4.setAttribute("value", t4);
+      my_formset.append(myTextB1);
+      my_formset.append(myTextB2);
+      my_formset.append(myTextB3);
+      my_formset.append(myTextB4);
+      //Feed Table
+      td1.appendChild(t1);
+      td2.appendChild(t2);
+      td3.appendChild(t3);
+      td4.appendChild(t4);
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      tr.appendChild(td4);
+      tr.appendChild(td5);
+      tr.appendChild(td6);
+      document.getElementById("myTb").appendChild(tr);
+      //document.getElementById("myUL").appendChild(li);
+    }
+    document.getElementById("myInput1").value = "";
+    document.getElementById("myInput2").value = "";
+    document.getElementById("myInput3").value = "";
+    document.getElementById("myInput4").value = "";
+  
+    var span = document.createElement("SPAN");
+    var txt = document.createTextNode("\u00D7");
+    span.className = "close";
+    span.appendChild(txt);
+    li.appendChild(span);
+  
+    for (i = 0; i < close.length; i++) {
+      close[i].onclick = function() {
+       // var div = this.parentElement;
+      //  div.style.display = "none";
+      console.log(this.parentElement.parentElement)
+      this.parentElement.parentElement.remove();
+      }
+    }
+    
+  
+  
+  }
+  </script>

@@ -1,12 +1,13 @@
 from django.forms.formsets import formset_factory
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 from django.views.generic import DeleteView
 from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.forms import formset_factory
+from django.utils import timezone
+import pandas as pd 
 import sys
 from .forms import *
 from .models import *
@@ -118,9 +119,14 @@ def drug_reg(request):
             item_type = request.POST.get("item_type", False)
             brand_name = request.POST.get("brand_name", False)
             chemical_name = request.POST.get("chemical_name", False)
+            receiving_name  =  request.POST.get("receiving_name", False)
+            receiving_number =  request.POST.get("receiving_number", False)
+            dispensing_name =  request.POST.get("dispensing_name", False)
+            dispensing_number =  request.POST.get("dispensing_number", False)
             print(item_type)
             item_type_object = ProductType.objects.get(id = item_type)
-            drug_reg_data = Products(item_name = item_name, item_type = item_type_object,  brand_name = brand_name , chemical_name = chemical_name)
+            drug_reg_data = Products(item_name = item_name, item_type = item_type_object, 
+             brand_name = brand_name , chemical_name = chemical_name, receiving_name = receiving_name,receiving_number = receiving_number,dispensing_name = dispensing_name,dispensing_number = dispensing_number)
             drug_reg_data.save()
             response_data = {'recieved': True, 'status': "ok"}
             return JsonResponse(response_data)
@@ -151,8 +157,16 @@ def drug_detail(request, pk):
         item_type = drug_rec.item_type.id 
         brand_name = drug_rec.brand_name
         chemical_name = drug_rec.chemical_name
+        receiving_name = drug_rec.receiving_name
+        receiving_number = drug_rec.receiving_number
+        dispensing_name = drug_rec.dispensing_name
+        dispensing_number = drug_rec.dispensing_number
         item_id =  drug_rec.id 
-        drug_rec_dict = {'item_name':item_name, "item_type":item_type,"brand_name":brand_name, "chemical_name": chemical_name, "item_id": item_id}
+        drug_rec_dict = {'item_name':item_name, "item_type":item_type,"brand_name":brand_name, 
+        "chemical_name": chemical_name, "item_id": item_id, "receiving_name": receiving_name,
+"receiving_number": receiving_number,
+"dispensing_name": dispensing_name,
+"dispensing_number": dispensing_number}
         print(drug_rec.item_type.id)
         drug_form = ProductsFormUpdate(data = drug_rec_dict)
         return render (request, "drug_update.html", {'productsForm': drug_form})
@@ -176,7 +190,10 @@ def drug_update(request):
                 item_type = request.POST.get("item_type", False)
                 edit_drug.brand_name = request.POST.get("brand_name", False)
                 edit_drug.chemical_name = request.POST.get("chemical_name", False)
-                
+                edit_drug.receiving_name = request.POST.get("receiving_name", False)
+                edit_drug.receiving_number = request.POST.get("receiving_number", False)
+                edit_drug.dispensing_name = request.POST.get("dispensing_name", False)
+                edit_drug.dispensing_number = request.POST.get("dispensing_number", False)
                 item_type_object = ProductType.objects.get(id = item_type)
                 edit_drug.item_type = item_type_object
                 edit_drug.save()
@@ -335,7 +352,7 @@ def inventory_drug_list(request, store_id):
         store_name =  store_request.storename
         drugs_in_store =  Inventory.objects.filter(store = store_request)
         print("Drugs in store")
-        print(drugs_in_store[0].product.chemical_name)
+        # print(drugs_in_store[0].product.chemical_name)
         ## Feed data into display list using template from store
         for drug in drugs_in_store:
             display_template["quantity"] = drug.quantity
@@ -345,10 +362,13 @@ def inventory_drug_list(request, store_id):
             # display_template["in_store"] = "present"
             display_template["drug_id"] = drug.product.id
             display_list.append(display_template)
+            print("Drugs in store")
             display_template = {}
         ##Get data not in store and use template to feed in display list
+
         drugs_not_in_store =  Products.objects.filter(inventory__isnull = True)
         for drug in drugs_not_in_store:
+            print("drugs not in store metioned")
             display_template["quantity"] = "Not in Store"
             display_template["chemical_name"] = drug.chemical_name
             display_template["item_name"] = drug.item_name
@@ -373,6 +393,7 @@ def inventory_drug_list(request, store_id):
         return render(request, 'inventory_drug_list.html', {'drug_recs':drug_recs,'store_name':store_name})
     
     except:
+        print("Drugs not in store", sys.exc_info()[0])
         return render(request, 'inventory_drug_list.html', {'drug_recs_error':"drug_recs_error",'store_name':store_name})
 
 
@@ -560,7 +581,8 @@ def supplier_update(request):
         try:
             if suppplierForm.is_valid():    
                 
-
+                print("suppllierr form ")
+                print(request.POST)
                 supplier_id = int(request.POST.get("supplier_id", False))
                 edit_supplier =  Suppliers.objects.get(id = supplier_id)
                 edit_supplier.name = request.POST.get("supplier_name", False)
@@ -586,5 +608,131 @@ class SupplierDelete(DeleteView):
     # needs to match the name of the view i want to send the user back to
     template_name = "suppliers_confirm_delete.html"
     success_url = reverse_lazy('inventory:display_suppliers')
+
+#External order
+##Create e
+def create_external_order(request):
+    if request.method == "GET": 
+        createExternalOrderForm=CreateExternalOrderForm()
+        return render(request, "create_external_order.html", {"createExternalOrderForm":createExternalOrderForm})
+    if request.method == "POST" and request.is_ajax:
+        createExternalOrderForm = CreateExternalOrderForm(data = request.POST)
+        try: 
+            if createExternalOrderForm.is_valid:
+                invoice_number = request.POST.get("invoice_number", False)
+                supplier_id  = request.POST.get("supplier", False)  
+                destination_store_id = request.POST.get("destination_store", False)
+                destination_store =  Stores.objects.get(id = int(destination_store_id))
+                supplier = Suppliers.objects.get(id = int(supplier_id))
+
+                externalOrder=ExternalOrder(supplier = supplier, invoice_number = invoice_number,
+                destination_store = destination_store, total_invoiced_amount = 0.0,date_time_entry = str(timezone.now()) 
+                , user_involved = request.user, approver = request.user )
+                externalOrder.save()
+            response_data = {'recieved': True, 'status': "ok"}
+            return JsonResponse(response_data)
+
+        except:
+            print("create_external_order", sys.exc_info())
+            response_data = {'recieved':False, 'status': "error"}
+            return JsonResponse(response_data)
+
+#display all registered drugs
+def display_external_orders(request):
+    
+    try:
+        external_order_recs = ExternalOrder.objects.all()
+        return render(request, 'external_order_lists.html',{'external_order_recs': external_order_recs})
+    except:
+        print("Errors", sys.exc_info()[0])
+        return render(request, 'external_order_lists.html',{'external_order_recs_error': "Could not Fetch"})
+def external_order_detail(request, pk):
+    try:
+        external_order_rec = ExternalOrder.objects.get(id = pk)
+        external_order_id = external_order_rec.id
+        invoice_number = external_order_rec.invoice_number
+        supplier = external_order_rec.supplier
+        destination_store = external_order_rec.destination_store
+        total_invoiced_amount = external_order_rec.total_invoiced_amount
+        date_time_entry = external_order_rec.date_time_entry
+        approval = external_order_rec.approval
+        products = external_order_rec.products
+        table_data = []
+        drugIntakeForm =  DrugIntakeForm()
+        if products == None:
+            print("prducts"+ str(type(products)))
+        else:
+            external_order_data_frame =  pd.DataFrame.from_dict(products, orient = 'index')
+            # print(external_order_data_frame["brand_name"])
+            p= 1
+            for i in products:
+                products[i]["count"] = p
+                table_data.append(products[i])
+                p =p+1
+            print(table_data)
+
+
+        external_info_dict = {'external_order_id':external_order_id, "invoice_number":invoice_number, 
+        "supplier":supplier,"destination_store":destination_store, "total_invoiced_amount":total_invoiced_amount,
+        "date_time_entry": date_time_entry,"approval":approval}
+        
+        # supplierForm = SupplierRegForm(data = supplier_rec_dict)
+        return render (request, "external_order_update.html",{"table_data":table_data,'drugIntakeForm': drugIntakeForm, "external_info_dict":external_info_dict})
+    except:
+        print("External Update Error", sys.exc_info())
+        return render(request, 'external_order_update.html',{'external_info_error': "Could not Fetch"})
+def external_order_update(request):
+    ###Get details of order 
+    externalOrderForm = CreateExternalOrderForm()
+    # ExternalOrderFormset = formset_factory(CreateExternalOrderForm, )
+    ###Update inventory
+    
+    
+    
+    if request.method == "POST" and request.is_ajax:
+        external_order_template = {}
+        item_name_list =  request.POST.getlist("item_name", False)
+        receiving_number_list =  request.POST.getlist("receiving_number", False)
+        dispensing_number_list =  request.POST.getlist("dispensing_number", False)
+        brand_name_list =  request.POST.getlist("brand_name", False)
+        chemical_name_list =  request.POST.getlist("chemical_name", False)
+        receiving_name_list =  request.POST.getlist("receiving_name", False)
+        drug_id_list =  request.POST.getlist("drug_id", False)
+        quantity_list =  request.POST.getlist("quantity", False)
+        total_price_list =  request.POST.getlist("total_price", False)
+        external_order_id = request.POST.get("external_order_id",False)
+        price_list =  request.POST.getlist("price",False)
+        print("prce list")
+        print(price_list[0])
+        #Get the record to update
+        external_order = ExternalOrder.objects.get(id = external_order_id)
+        print(external_order_id)
+        for d in range(0, len(item_name_list)):
+            count =str( d+1)
+            print("count = "+count)
+            external_order_template["Drug"+count]= {"item_name": item_name_list[d], 
+                "receiving_number":receiving_number_list[d],
+                "dispensing_number":dispensing_number_list[d],
+                "brand_name":brand_name_list[d],
+                "chemical_name":chemical_name_list[d],
+                "receiving_name":receiving_name_list[d],
+                "drug_id":drug_id_list[d],
+                "quantity":quantity_list[d],
+                "price":price_list[d],
+
+                "total_price":total_price_list[d]}
+        external_order.products = external_order_template
+        external_order.save()
+
+    # invoice_number
+    # supplier
+    # destination_store
+    # total_invoiced_amount
+    # date_time_entry
+    # user_involved
+    # approval
+    # approver
+    # products
+
 
 
